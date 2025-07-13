@@ -26,11 +26,11 @@ class TweetCreateRequest(BaseModel):
 
 class TweetCreateResponse(BaseModel):
     """
-    Ответ после успешного создания твита.
+    Response returned after a successful tweet creation.
     """
 
-    result: bool
-    tweet_id: int
+    result: Literal[True] = Field(..., description="Indicates whether the tweet was successfully created", example=True)
+    tweet_id: int = Field(..., description="ID of the newly created tweet", example=12)
 
 
 class LikeResponse(BaseModel):
