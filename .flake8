@@ -1,0 +1,23 @@
+[flake8]
+max-line-length = 88
+extend-ignore =  B008
+#,D100,D101,D102,D103,D104,D105,D106,D107
+# конфликтует с black (slices)
+# предпочтение операторов в начале строки (PEP 8)
+exclude =
+    .git,
+    __pycache__,
+    .venv,
+    build,
+    dist,
+    migrations,
+    tests/__init__.py
+
+# Плагины
+# D: docstrings (flake8-docstrings)
+# ANN: annotations (flake8-annotations)
+# C4: comprehensions (flake8-comprehensions)
+# B: bugbear
+# I: import-order
+
+select = C4, B, E, F, W, ANN, D, I

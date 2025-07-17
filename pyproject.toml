@@ -1,0 +1,11 @@
+[tool.ruff]
+line-length = 88
+target-version = "py312"  # или "py311", "py310", зависит от твоего Python
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]  # основные правила: pyflakes, pep8, isort, bugbear, pyupgrade
+ignore = ["B008"]  # игнорировать определённые ошибки, например, использование mutable default args
+
+[tool.ruff.format]
+docstring-code-format = true
+quote-style = "double"  # или 'single', если хочешь

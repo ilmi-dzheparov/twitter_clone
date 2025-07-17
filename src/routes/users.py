@@ -1,13 +1,17 @@
-from fastapi import APIRouter, Header, HTTPException, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
+"""User-related API routes including get, follow operations."""
+
+from fastapi import APIRouter, Depends, HTTPException, Header
+
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+
 from src.database import get_async_db
 from src.models import User
 from src.schemas.user_schemas import (
-    UserProfileResponse,
-    UserPostFollow,
     UserDeleteFollow,
+    UserPostFollow,
+    UserProfileResponse,
 )
 
 router = APIRouter(prefix="/api/users", tags=["Users"])
@@ -17,7 +21,7 @@ router = APIRouter(prefix="/api/users", tags=["Users"])
 async def get_me(
     api_key: str = Header(..., alias="api-key"),
     db: AsyncSession = Depends(get_async_db),
-):
+) -> UserProfileResponse:
     """
     Get the profile of the current user using their API key.
 
@@ -52,7 +56,7 @@ async def post_follow(
     id: int,
     api_key: str = Header(..., alias="api-key"),
     db: AsyncSession = Depends(get_async_db),
-):
+) -> UserPostFollow:
     """
     Follow another user by their user ID.
 
@@ -103,7 +107,7 @@ async def delete_follow(
     id: int,
     api_key: str = Header(..., alias="api-key"),
     db: AsyncSession = Depends(get_async_db),
-):
+) -> UserDeleteFollow:
     """
     Unfollow a user by their user ID.
 
@@ -115,7 +119,6 @@ async def delete_follow(
     Returns:
         dict: Result indicating success of the unfollow operation.
     """
-
     # Fetch current user
     res = await db.execute(
         select(User)
@@ -149,7 +152,9 @@ async def delete_follow(
 
 
 @router.get("/{id}", response_model=UserProfileResponse)
-async def get_user_by_id(id: int, db: AsyncSession = Depends(get_async_db)):
+async def get_user_by_id(
+        id: int, db: AsyncSession = Depends(get_async_db)
+) -> UserProfileResponse:
     """
     Get a user profile by user ID.
 
@@ -160,7 +165,6 @@ async def get_user_by_id(id: int, db: AsyncSession = Depends(get_async_db)):
     Returns:
         dict: The user profile with followers and following lists.
     """
-
     res = await db.execute(
         select(User)
         .options(selectinload(User.followers), selectinload(User.following))

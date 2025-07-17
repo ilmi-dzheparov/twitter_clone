@@ -1,7 +1,9 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, Table
-from sqlalchemy.orm import relationship
-from .database import Base
+"""SQLAlchemy models for the Twitter clone application."""
 
+from sqlalchemy import Column, ForeignKey, Integer, String, Table, Text
+from sqlalchemy.orm import relationship
+
+from .database import Base
 
 # Association table for user followers (many-to-many relationship)
 followers_table = Table(
@@ -15,6 +17,7 @@ followers_table = Table(
 class User(Base):
     """
     Represents a user in the system.
+
     Users can follow each other and have tweets, likes, and media uploads.
     """
 
@@ -38,6 +41,7 @@ class User(Base):
 class Tweet(Base):
     """
     Represents a tweet created by a user.
+
     A tweet can contain text and associated media.
     """
 
@@ -53,9 +57,7 @@ class Tweet(Base):
 
 
 class Like(Base):
-    """
-    Represents a like given by a user to a tweet.
-    """
+    """Represents a like given by a user to a tweet."""
 
     __tablename__ = "likes"
 
@@ -69,9 +71,7 @@ class Like(Base):
 
 
 class Media(Base):
-    """
-    Represents a media file uploaded by a user.
-    """
+    """Represents a media file uploaded by a user."""
 
     __tablename__ = "medias"
 

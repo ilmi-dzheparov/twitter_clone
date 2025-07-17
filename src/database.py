@@ -1,7 +1,8 @@
+"""Database configuration and connection utilities."""
 import os
 
-from sqlalchemy import select, create_engine
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -19,10 +20,8 @@ async_session = sessionmaker(
 )
 
 
-async def get_async_db():
-    """
-    Yield an asynchronous database session for use with FastAPI dependency injection.
-    """
+async def get_async_db() -> None:
+    """Yield an asynchronous database session for use with FastAPI dependency injection."""
     async with async_session() as session:
         yield session
 
@@ -31,9 +30,10 @@ async def get_async_db():
 Base = declarative_base()
 
 
-async def init_db():
+async def init_db() -> None:
     """
-    Initialize the database:
+    Initialize the database.
+
     - Create all tables defined in the ORM models
     - Populate the database with sample users if no users exist
     """

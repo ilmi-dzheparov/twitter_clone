@@ -1,20 +1,26 @@
-from fastapi import APIRouter, Header, HTTPException, Depends, UploadFile, File
+"""Tweet-related API routes including create, read, like, and delete operations."""
+
+import json
+
+from fastapi import APIRouter, Depends, HTTPException, Header
+
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-from src.models import Tweet, User, Like, Media
+
+from src.database import get_async_db
+from src.models import Like, Media, Tweet, User
 from src.schemas.tweet_schemas import (
     TweetCreateRequest,
     TweetCreateResponse,
-    TweetsGetResponse,
     TweetDelete,
-    TweetPostLikeResponse,
     TweetDeleteLikeResponse,
+    TweetPostLikeResponse,
+    TweetsGetResponse,
 )
-from src.database import get_async_db
-import json
 
+from starlette.responses import JSONResponse
 
 router = APIRouter(prefix="/api/tweets", tags=["Tweets"])
 
@@ -24,7 +30,7 @@ async def create_tweet(
     payload: TweetCreateRequest,
     api_key: str = Header(..., alias="api-key"),
     db: AsyncSession = Depends(get_async_db),
-):
+) -> TweetCreateResponse:
     """
     Create a new tweet.
 
@@ -57,7 +63,9 @@ async def create_tweet(
 
 
 @router.get("", response_model=TweetsGetResponse)
-async def get_tweets(db: AsyncSession = Depends(get_async_db)):
+async def get_tweets(
+        db: AsyncSession = Depends(get_async_db)
+) -> TweetsGetResponse:
     """
     Retrieve all tweets with authors, likes, and media attachments.
 
@@ -108,15 +116,19 @@ async def get_tweets(db: AsyncSession = Depends(get_async_db)):
 
     except SQLAlchemyError as e:
         # Database error
-        return {"result": False, "error_type": "DatabaseError", "error_message": str(e)}
+        return JSONResponse(
+            {"result": False, "error_type": "DatabaseError", "error_message": str(e)}
+        )
 
     except Exception as e:
         # Any other error
-        return {
-            "result": False,
-            "error_type": e.__class__.__name__,
-            "error_message": str(e),
-        }
+        return JSONResponse(
+            {
+                "result": False,
+                "error_type": e.__class__.__name__,
+                "error_message": str(e),
+            }
+        )
 
 
 @router.delete("/{id}", response_model=TweetDelete)
@@ -124,7 +136,7 @@ async def delete_tweet(
     id: int,
     api_key: str = Header(..., alias="api-key"),
     db: AsyncSession = Depends(get_async_db),
-):
+) -> TweetDelete:
     """
     Delete a tweet by ID if it belongs to the user.
 
@@ -160,7 +172,7 @@ async def create_like(
     id: int,
     api_key: str = Header(..., alias="api-key"),
     db: AsyncSession = Depends(get_async_db),
-):
+) -> TweetPostLikeResponse:
     """
     Like a tweet by ID.
 
@@ -195,7 +207,7 @@ async def delete_like(
     id: int,
     api_key: str = Header(..., alias="api-key"),
     db: AsyncSession = Depends(get_async_db),
-):
+) -> TweetDeleteLikeResponse:
     """
     Remove like from a tweet.
 
