@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 
 # Database connection URL, using asyncpg for PostgreSQL
 DATABASE_URL = os.getenv(
-    "DATABASE_URL", "postgresql+asyncpg://twitter_user:twitter_pass@db:5432/twitter_db"
+    "DATABASE_URL"#, "postgresql+asyncpg://twitter_user:twitter_pass@db:5432/twitter_db"
 )
 
 # Create an asynchronous engine

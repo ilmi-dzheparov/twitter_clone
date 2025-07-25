@@ -8,22 +8,26 @@ services:
 
     volumes:
       - media_data:/media
-
-    environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:password@twitter_db:5432/twitter_clone_db
+    env_file:
+      - .env
+    #environment:
+      #DATABASE_URL: postgresql+asyncpg://postgres:password@twitter_db:5432/twitter_clone_db
     ports:
       - "8000:8000"
     networks:
       - twitter_network
+    depends_on:
+      - db
 
   db:
-    container_name: twitter_db
+    container_name: ${POSTGRES_HOST}
+    #twitter_db
     image: postgres:15
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: twitter_clone_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
