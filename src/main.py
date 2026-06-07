@@ -1,4 +1,5 @@
 """Main entry point for the FastAPI Twitter clone application."""
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
@@ -8,9 +9,20 @@ from .database import init_db
 from .routes import medias, tweets, users
 
 
-# Create FastAPI application instance
-app = FastAPI(title="Microblog API")
 
+
+# # 1. Используем lifespan вместо @app.on_event
+# @asynccontextmanager
+# async def lifespan(app: FastAPI):
+#     # Код при запуске
+#     await init_db()
+#     yield
+#     # Код при выключении (если нужно закрыть сессии БД)
+
+# Create FastAPI application instance
+
+# app = FastAPI(title="Microblog API", lifespan=lifespan)
+app = FastAPI(title="Microblog API")
 
 @app.on_event("startup")
 async def startup() -> None:

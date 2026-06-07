@@ -1,9 +1,9 @@
 """SQLAlchemy models for the Twitter clone application."""
 
+from .database import Base
 from sqlalchemy import Column, ForeignKey, Integer, String, Table, Text
 from sqlalchemy.orm import relationship
 
-from .database import Base
 
 # Association table for user followers (many-to-many relationship)
 followers_table = Table(
